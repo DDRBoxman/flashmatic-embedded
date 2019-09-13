@@ -53,9 +53,35 @@ void setup() {
   // iogear serial
   Serial1.begin(19200, SERIAL_8N1);
 
+  Serial1.write("read\r");
+
+  delay(100);
+
+  while(Serial1.available()) {
+    Serial.write(Serial1.read());
+  }
+
+delay(100);
+
   // Disable auto switching on the hdmi switch
   // apparently this resets if it loses power :|
   Serial1.write("swmode default\r");
+
+delay(100);
+
+    while(Serial1.available()) {
+    Serial.write(Serial1.read());
+  }
+
+delay(1000);
+  
+  //switchHDMIPort(1);
+
+  //Serial1.write("sw i01\r");
+
+  //delay(1000);
+
+  switchHDMIPort(2);
 
   // check for the WiFi module:
   WiFi.setPins(SPIWIFI_SS, SPIWIFI_ACK, ESP32_RESETN, ESP32_GPIO0, &SPIWIFI);
@@ -140,13 +166,6 @@ void loop() {
     client.stop();
     Serial.println("Client disconnected");
   }
-
-    if (Serial1.available()) {
-    Serial.write("HDMI Switch ------------------");
-    while(Serial1.available())
-      Serial.write(Serial1.read());
-      Serial.write("------------------------------");
-  }
 }
 
 
@@ -169,6 +188,6 @@ void printWifiStatus() {
 
 void switchHDMIPort(int port) {
   Serial1.write("sw i0");
-  Serial1.write(port);
+  Serial1.print(port);
   Serial1.write("\r");
 }
